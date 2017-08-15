@@ -1,5 +1,5 @@
 /*
- * A logging format lib 
+ * A logging format library
  *
  * Copyright (C) 2017 liujiaqi <tihljq@gmail.com> All Rights Reserved.
  *
@@ -12,14 +12,13 @@
 #include <stdio.h>
 
 #ifdef DEBUG
-  #ifndef LOG_LEVEL
-    #define LOG_LEVEL 3
-  #endif
+  #define _log(prefix, fmt, ...) _log_file(prefix, TTY_COLOR_RESET fmt, ##__VA_ARGS__)
 #else
-  #ifdef LOG_LEVEL
-    #undef LOG_LEVEL
-  #endif
-  #define LOG_LEVEL 0
+  #define _log(...)
+#endif
+
+#ifndef LOG_LEVEL
+  #define LOG_LEVEL 3
 #endif
 
 #ifndef LOG_NO_TIME
@@ -46,9 +45,9 @@
 #endif
 
 #ifndef LOG_NO_FILE
-  #define _log_file(prefix, fmt, ...) _log_tid(prefix, "[%s:%d]" TTY_COLOR_RESET fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+  #define _log_file(prefix, fmt, ...) _log_tid(prefix, "[%s:%d]" fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
-  #define _log_file(prefix, fmt, ...) _log_tid(prefix, TTY_COLOR_RESET fmt, ##__VA_ARGS__)
+  #define _log_file(prefix, fmt, ...) _log_tid(prefix, fmt, ##__VA_ARGS__)
 #endif
 
 #ifndef LOG_NO_COLOR
@@ -70,25 +69,25 @@
 #endif
 
 #if LOG_LEVEL > 0
-  #define log_error(...) _log_file(TTY_COLOR_RED "[ERROR]", ##__VA_ARGS__)
+  #define log_error(...) _log(TTY_COLOR_RED "[ERROR]", ##__VA_ARGS__)
 #else
   #define log_error(...)
 #endif
 
 #if LOG_LEVEL > 1
-  #define log_warn(...) _log_file(TTY_COLOR_YELLOW "[WARN]", ##__VA_ARGS__)
+  #define log_warn(...) _log(TTY_COLOR_YELLOW "[WARN]", ##__VA_ARGS__)
 #else
   #define log_warn(...)
 #endif
 
 #if LOG_LEVEL > 2
-  #define log_info(...) _log_file(TTY_COLOR_GREEN "[INFO]", ##__VA_ARGS__)
+  #define log_info(...) _log(TTY_COLOR_GREEN "[INFO]", ##__VA_ARGS__)
 #else
   #define log_info(...)
 #endif
 
 #if LOG_LEVEL > 3
-  #define log_debug(...) _log_file(TTY_COLOR_BLUE "[DEBUG]", ##__VA_ARGS__)
+  #define log_debug(...) _log(TTY_COLOR_BLUE "[DEBUG]", ##__VA_ARGS__)
 #else
   #define log_debug(...)
 #endif
