@@ -12,7 +12,8 @@
 #include <stdio.h>
 
 #ifdef DEBUG
-  #define _log(prefix, fmt, ...) _log_file(prefix, TTY_COLOR_RESET fmt, ##__VA_ARGS__)
+  #define _log(prefix, fmt, ...) \
+    _log_file(prefix, TTY_COLOR_RESET fmt "\n", ##__VA_ARGS__)
 #else
   #define _log(...)
 #endif
@@ -39,13 +40,15 @@
 #ifndef LOG_NO_TID
   #include <unistd.h>
   #include <sys/syscall.h>
-  #define _log_tid(prefix, fmt, ...) _log_time(prefix, "[%d]" fmt, syscall(__NR_gettid), ##__VA_ARGS__)
+  #define _log_tid(prefix, fmt, ...) \
+    _log_time(prefix, "[%ld]" fmt, syscall(__NR_gettid), ##__VA_ARGS__)
 #else
  #define _log_tid(prefix, fmt, ...) _log_time(prefix, fmt, ##__VA_ARGS__)
 #endif
 
 #ifndef LOG_NO_FILE
-  #define _log_file(prefix, fmt, ...) _log_tid(prefix, "[%s:%d]" fmt, __FILE__, __LINE__, ##__VA_ARGS__)
+  #define _log_file(prefix, fmt, ...) \
+    _log_tid(prefix, "[%s:%d]" fmt, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
   #define _log_file(prefix, fmt, ...) _log_tid(prefix, fmt, ##__VA_ARGS__)
 #endif
